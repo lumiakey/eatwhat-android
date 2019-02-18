@@ -1,0 +1,16 @@
+<resources>
+    <!-- Home -->
+    <string name="app_name">EatWhat</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">扫一扫</string>
+    <!-- Fragment -->
+    <string name="fragment_today">今日</string>
+    <string name="fragment_future">三日</string>
+    <string name="fragment_recommend">推荐</string>
+    <string name="fragment_firstView">第一视角</string>
+    <string name="fragment_foodTraceability">菜品追溯</string>
+</resources>

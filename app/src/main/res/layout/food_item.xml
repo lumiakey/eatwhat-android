@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageButton
+            android:id="@+id/food_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/logo" />
+
+        <com.what2e.eatwhat.widget.ShoppingCountView
+            android:id="@+id/add_shopping_trolley"
+            android:layout_width="38dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="right|bottom"
+            android:visibility="visible"
+            app:scv_add_btn_bg_color="?attr/colorPrimary"
+            app:scv_add_btn_text_color="@color/white"
+            app:scv_minus_btn_bg_color="@color/white"
+            app:scv_minus_btn_text_color="?attr/colorPrimary" />
+
+        <ImageView
+            android:id="@+id/time_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_menu_more" />
+    </FrameLayout>
+
+
+</android.support.constraint.ConstraintLayout>
