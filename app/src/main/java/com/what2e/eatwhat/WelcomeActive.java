@@ -3,16 +3,24 @@ package com.what2e.eatwhat;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.what2e.eatwhat.R;
 import com.what2e.eatwhat.base.BasePermissionActivity;
+import com.what2e.eatwhat.tool.CheckNet;
+import com.what2e.eatwhat.tool.NetworkTools;
+import com.what2e.eatwhat.util.DialogButtonListener;
+import com.what2e.eatwhat.util.Util;
 
 public class WelcomeActive extends BasePermissionActivity {
+    private IntentFilter intentFilter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +65,30 @@ public class WelcomeActive extends BasePermissionActivity {
     }
 
     private void skipActivity() {
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        if(NetworkTools.checkNetwork(this)) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }else {
+            Util.showDialog(this,"网络故障","请检查网络设置",checkNetworkButtonListener);
+        }
+
     }
+
+    /**
+     * 检查网络设置
+     */
+    private DialogButtonListener checkNetworkButtonListener = new DialogButtonListener() {
+        @Override
+        public void onDialogOkButtonClick() {
+            Intent intent =  new Intent(Settings.ACTION_SETTINGS);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onDialogCancelButtonClick() {
+            finish();
+        }
+    };
+
 
 }

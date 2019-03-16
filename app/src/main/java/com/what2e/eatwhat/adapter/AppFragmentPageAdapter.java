@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
+/**
+ * 滑动切换标签页
+ */
 public class AppFragmentPageAdapter extends FragmentPagerAdapter {
     public List<Fragment> mFragmentList;
 

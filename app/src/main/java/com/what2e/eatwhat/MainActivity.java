@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();
-        initStaticView();
+        initView();  //加载侧边栏
+        initStaticView(); //加载静态资源
 
 
     }
