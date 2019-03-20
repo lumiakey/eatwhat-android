@@ -9,12 +9,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.what2e.eatwhat.base.BasePermissionActivity;
-import com.what2e.eatwhat.tool.CheckNet;
 import com.what2e.eatwhat.tool.NetworkTools;
 import com.what2e.eatwhat.util.DialogButtonListener;
 import com.what2e.eatwhat.util.Util;
