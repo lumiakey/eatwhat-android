@@ -2,11 +2,11 @@ package com.what2e.eatwhat.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 
-import com.what2e.eatwhat.tool.CheckNet;
 import com.what2e.eatwhat.tool.NetworkTools;
 
 
@@ -17,19 +17,25 @@ public class Util {
     private static boolean IsConnect = true;
 
     public static void showToast(Context context, String text) {
-        if (toast == null) {
-            toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.show();
-        } else {
-            toast.setText(text);
+        try {
+            if (toast == null) {
+                toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.show();
+            } else {
+                toast.setText(text);
+            }
+            toast = null;
+        } catch (Exception e) {
+            Looper.prepare();
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+            Looper.loop();
         }
-        toast = null;
     }
 
     public static boolean checkNetwork(Context context) {
         IsConnect = true;
-        if (NetworkTools.getNetState(context)== CheckNet.NET_NONE) {
+        if (NetworkTools.getNetState(context)== NetworkTools.NET_NONE) {
             IsConnect = false;
             Util.showToast(context, "网络连接失败,请检查网络设置");
             return IsConnect;
@@ -81,4 +87,5 @@ public class Util {
         // 显示对话框
         mAlertDialog.show();
     }
+
 }
