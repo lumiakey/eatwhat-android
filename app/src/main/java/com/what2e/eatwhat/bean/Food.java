@@ -1,6 +1,37 @@
 package com.what2e.eatwhat.bean;
 
 public class Food {
+    int foodId;
+    String timeTips ; //时间提示
+    String foodPicture ; //菜品图片
+    String foodDesc; //菜品描述
+    String foodPrice; //菜品价格
+    String foodName; //菜品名称
+
+    public String getFoodPrice() {
+        return foodPrice;
+    }
+
+    public void setFoodPrice(String foodPrice) {
+        this.foodPrice = foodPrice;
+    }
+
+    public int getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
+    }
+
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
+    }
+
     public String getTimeTips() {
         return timeTips;
     }
@@ -25,16 +56,6 @@ public class Food {
         this.foodDesc = foodDesc;
     }
 
-    public float getFoodPrice() {
-        return foodPrice;
-    }
 
-    public void setFoodPrice(float foodPrice) {
-        this.foodPrice = foodPrice;
-    }
 
-    String timeTips ; //时间提示
-    String foodPicture ; //菜品图片
-    String foodDesc; //菜品描述
-    float foodPrice; //菜品价格
 }

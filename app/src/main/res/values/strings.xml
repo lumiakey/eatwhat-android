@@ -3,8 +3,8 @@
     <string name="app_name">EatWhat</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">用户名</string>
+    <string name="nav_header_subtitle">登录/注册 ></string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">扫一扫</string>
     <!-- Fragment -->
@@ -13,4 +13,42 @@
     <string name="fragment_recommend">推荐</string>
     <string name="fragment_firstView">第一视角</string>
     <string name="fragment_foodTraceability">菜品追溯</string>
+
+
+    <!--zxing-->
+    <string name="button_ok">OK</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+
+    <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
+    <string name="viewfinderview_status_text2">即可自动扫描</string>
+
+    <!--feedback-->
+    <string name="hint_edit_feedback_content">请输入反馈内容（最多200字）</string>
+    <string name="hint_edit_contact_way">请输入您的联系方式（可选）</string>
+
+    <!--address-->
+    <string name="label_address_create">新增地址</string>
+
+    <!--login-->
+    <string name="label_link_forget_password">忘记密码？</string>
+    <string name="label_link_register">去注册</string>
+
+    <!--update_address-->
+    <string name="hint_edit_name">请输入您的名字</string>
+    <string name="hint_edit_phone">请输入您的手机号</string>
+    <string name="hint_edit_address_summary">请输入地址(可点击地图自动填入)</string>
+    <string name="hint_edit_address_detail">(选填)详细地址(楼层,门牌号等)</string>
+    <string name="label_male">先生</string>
+    <string name="label_female">女士</string>
+    <string name="btn_confirm_add">确认添加</string>
+
+    <!--remark-->
+    <string name="hint_edit_remark">请输入备注（最多200字）</string>
+    <string name="label_common_remark">常用备注</string>
+
+    <!--welcome-->
+    <string name="warning">提示:因打开网络连接存在一定时间延迟，故请在网络已正常连接后再点击“确定”按钮，以保证顺利登录！</string>
+    <string name="text_wifi">WiFi</string>
+    <string name="text_mobile_data">网络</string>
+    <string name="confirm">确定</string>
 </resources>
