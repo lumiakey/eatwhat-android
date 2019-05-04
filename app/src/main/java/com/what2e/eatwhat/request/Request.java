@@ -50,8 +50,8 @@ public class Request implements RequestManager {
     public String postForm(String url, String... params) throws Exception {
         RequestTask requestTask = new RequestTask();
         requestTask.executeRequest(url, RequestTask.REQUEST_MODE_POST, params);
-        //返回state_code
         String result = requestTask.get();
+        System.out.print("result"+result);
         return result;
     }
 

@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.what2e.eatwhat.base.BaseActivity;
-import com.what2e.eatwhat.bean.Status;
+import com.what2e.eatwhat.bean.LoginStatus;
 import com.what2e.eatwhat.tools.dialog.ProgressDialog;
 import com.what2e.eatwhat.util.Util;
 
@@ -141,7 +141,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 return;
             }
             Gson gson = new Gson();
-            Status status = gson.fromJson(postForm, Status.class);
+            LoginStatus status = gson.fromJson(postForm, LoginStatus.class);
             final int statusCode = status.getStatusCode();
             final AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
             builder.setTitle("提示");

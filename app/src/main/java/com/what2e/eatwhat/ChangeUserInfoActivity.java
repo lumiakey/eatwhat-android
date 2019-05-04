@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.what2e.eatwhat.base.BaseActivity;
-import com.what2e.eatwhat.bean.Status;
+import com.what2e.eatwhat.bean.LoginStatus;
 import com.what2e.eatwhat.bean.User;
 import com.what2e.eatwhat.tools.dialog.ProgressDialog;
 import com.what2e.eatwhat.util.GetUserData;
@@ -192,7 +192,7 @@ public class ChangeUserInfoActivity extends BaseActivity implements View.OnClick
                 return;
             } else {
                 Gson gson = new Gson();
-                Status status = gson.fromJson(postForm, Status.class);
+                LoginStatus status = gson.fromJson(postForm, LoginStatus.class);
                 statusCode = status.getStatusCode();
                 Util.showToast(ChangeUserInfoActivity.this, status.getStatusDescription());
                 if (statusCode == 200) {
