@@ -12,7 +12,7 @@ import com.what2e.eatwhat.tools.NetworkTools;
 
 public class Util {
     private static AlertDialog mAlertDialog;
-    public static String Url = "http://localhost:8080/eatwhat_api_war/";
+    public static String Url = "http://192.168.2.113:8080/eatwhat_api_war/";
     private static Toast toast;
     private static boolean IsConnect = true;
 

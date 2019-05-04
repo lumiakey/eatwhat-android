@@ -18,9 +18,10 @@ public class LoginService {
     public static String checkAccount(String phoneNumber,String password) {
         String postForm = null;
         try {
+            // postForm  requestTask.get();
             postForm = requestManager.postForm(
                     requestURl + "user/login",
-                    "phoneNumber", phoneNumber,
+                    "phonenumber", phoneNumber,
                     "password", password);
         } catch (Exception e) {
             e.printStackTrace();

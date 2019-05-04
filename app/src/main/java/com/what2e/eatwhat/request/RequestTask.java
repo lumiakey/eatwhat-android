@@ -2,6 +2,7 @@ package com.what2e.eatwhat.request;
 
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

@@ -3,7 +3,6 @@ package com.what2e.eatwhat;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -19,11 +18,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.what2e.eatwhat.base.ActivityCollector;
 import com.what2e.eatwhat.base.BaseActivity;
-import com.what2e.eatwhat.bean.Status;
+import com.what2e.eatwhat.bean.LoginStatus;
+import com.what2e.eatwhat.bean.RequestResult;
 import com.what2e.eatwhat.bean.User;
 import com.what2e.eatwhat.service.LoginService;
 import com.what2e.eatwhat.tools.VerificationCode;
-import com.what2e.eatwhat.util.GetUserData;
 import com.what2e.eatwhat.util.Util;
 
 /**
@@ -177,7 +176,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void run() {
                 try {
-                    postForm = LoginService.checkAccount(phoneNumber, password);
+                    postForm = LoginService.checkAccount(phoneNumber, password);//返回state_code
                     loginHandler.post(runnableLogin);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -192,12 +191,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         public void run() {
             Gson gson = new Gson();
             if (postForm == null || postForm.isEmpty() || postForm.length() > 100) {
-                Util.showToast(LoginActivity.this, "服务器出错，正在收集错误信息！");
+                Util.showToast(LoginActivity.this, "服务器出错，请求失败！");
                 progress.dismiss();
                 return;
             } else {
-                Status status = gson.fromJson(postForm, Status.class);
-                statusCode = status.getStatusCode();
+                RequestResult requestResult = gson.fromJson(postForm, RequestResult.class);
+                LoginStatus loginStatus = gson.fromJson(requestResult.getResult().toString(), LoginStatus.class);
+                statusCode = loginStatus.getStatusCode();
                 if (statusCode == 200) {
                     //保存用户登录信息到本地
                     SharedPreferences sharedPreferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
@@ -208,7 +208,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     editors.commit();//提交修改
                     MainActivity.actionStart(LoginActivity.this, phoneNumber, statusCode);
                 }
-                Util.showToast(LoginActivity.this, status.getStatusDescription());
+                Util.showToast(LoginActivity.this, loginStatus.getStatusDescription());
             }
             progress.dismiss();
         }
