@@ -1,14 +1,10 @@
-package com.what2e.eatwhat.tool;
+package com.what2e.eatwhat.tools;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.what2e.eatwhat.MainActivity;
-import com.what2e.eatwhat.WelcomeActive;
 import com.what2e.eatwhat.util.Util;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;

@@ -11,19 +11,24 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.widget.TextView;
 
+import com.what2e.eatwhat.application.EatWhatApplication;
 import com.what2e.eatwhat.base.BasePermissionActivity;
-import com.what2e.eatwhat.tool.NetworkTools;
+import com.what2e.eatwhat.tools.NetworkTools;
 import com.what2e.eatwhat.util.DialogButtonListener;
 import com.what2e.eatwhat.util.Util;
 
 public class WelcomeActive extends BasePermissionActivity {
     private IntentFilter intentFilter;
+    private EatWhatApplication eatWhatApplication;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        eatWhatApplication = (EatWhatApplication) getApplication();
         TextView versionNumber = (TextView) findViewById(R.id.versionNumber);
         versionNumber.setText("吃啥" + getLocalVersionName(WelcomeActive.this));
+        eatWhatApplication.versionName = getLocalVersionName(WelcomeActive.this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -62,11 +67,11 @@ public class WelcomeActive extends BasePermissionActivity {
     }
 
     private void skipActivity() {
-        if(NetworkTools.checkNetwork(this)) {
+        if (NetworkTools.checkNetwork(this)) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
-        }else {
-            Util.showDialog(this,"网络故障","请检查网络设置",checkNetworkButtonListener);
+        } else {
+            Util.showDialog(this, "网络故障", "请检查网络设置", checkNetworkButtonListener);
         }
 
     }
@@ -77,7 +82,7 @@ public class WelcomeActive extends BasePermissionActivity {
     private DialogButtonListener checkNetworkButtonListener = new DialogButtonListener() {
         @Override
         public void onDialogOkButtonClick() {
-            Intent intent =  new Intent(Settings.ACTION_SETTINGS);
+            Intent intent = new Intent(Settings.ACTION_SETTINGS);
             startActivity(intent);
         }
 

@@ -1,17 +1,20 @@
 package com.what2e.eatwhat;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,26 +24,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.airsaid.pickerviewlibrary.CityPickerView;
-import com.airsaid.pickerviewlibrary.listener.OnSimpleCitySelectListener;
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.google.gson.Gson;
-import com.what2e.eatwhat.R;
 import com.what2e.eatwhat.adapter.AppFragmentPageAdapter;
+import com.what2e.eatwhat.base.BaseActivity;
 import com.what2e.eatwhat.bean.Json;
+import com.what2e.eatwhat.bean.User;
 import com.what2e.eatwhat.fragment.FifthFragment;
 import com.what2e.eatwhat.fragment.FirstFragment;
 import com.what2e.eatwhat.fragment.FourthlyFragment;
 import com.what2e.eatwhat.fragment.ScendFragment;
 import com.what2e.eatwhat.fragment.ThirdlyFragment;
+import com.what2e.eatwhat.service.UserService;
+import com.what2e.eatwhat.tools.dialog.ProgressDialog;
 import com.what2e.eatwhat.util.AddressUtil;
 import com.what2e.eatwhat.util.GetJsonDataUtil;
+import com.what2e.eatwhat.util.GetUserData;
 import com.what2e.eatwhat.util.Util;
 
 import org.json.JSONArray;
@@ -48,35 +53,55 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
+/**
+ * @author lumike
+ * @version v1.0
+ * @title MainActivity
+ * @date 19-2-22
+ * @Description 主activity
+ **/
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private TextView firstText,scendText,thirdlyText,fourthlyText,fifthText;
-    private ImageButton locationButton;
+    private TextView firstText, scendText, thirdlyText, fourthlyText, fifthText, loginRegisterTextView, userNameTextView;
+    private ImageButton locationImageButton, loginRegistImageButtom;
+    private Button settingButton;
     private ViewPager viewPager;            //实现滑动效果
+    private NavigationView navigationView;
     private ArrayList<Fragment> fragmentArrayList; //存放fragment
     private ArrayList<TextView> textViewArrayList; //存放textView
     private FragmentManager fragmentManager;    //管理fragment
     private Thread thread;
+    private String userName;
+    private final String EXIT = "退出登录！";
     public List<Json> options1Items = new ArrayList<>();
     public ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
     public ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
+    private boolean isRefresh = true;//控制底部导航栏加载次数，否则再次刷新会重复
+    private ProgressDialog progressDialog;
+
+    public User user;
+    public String userId, address, name, email, sex, avatar, phoneNumber;
 
     private static final int MSG_LOAD_DATA = 0x0001;
     private static final int MSG_LOAD_SUCCESS = 0x0002;
     private static final int MSG_LOAD_FAILED = 0x0003;
     private static boolean isLoaded = false;
 
-    private int mDefaultColor= Color.BLACK;
-    private int mActiveColor=Color.RED;
+    public int loginStatus = 0; //登录标志 0代表未登录 1代表已经登录
+
+    private int mDefaultColor = Color.BLACK;
+    private int mActiveColor = Color.RED;
+
+    private final int requestCode_USERINFO = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();  //加载侧边栏
+        initNavView();  //加载侧边栏
         initStaticView(); //加载静态资源
+        getIntentData();
     }
 
     @SuppressLint("HandlerLeak")
@@ -85,7 +110,7 @@ public class MainActivity extends AppCompatActivity
             switch (msg.what) {
                 case MSG_LOAD_DATA:
                     if (thread == null) {//如果已创建就不再重新创建子线程了
-                        Util.showToast(MainActivity.this,"Begin Parse Data");
+                        Util.showToast(MainActivity.this, "Begin Parse Data");
                         thread = new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -98,12 +123,12 @@ public class MainActivity extends AppCompatActivity
                     break;
 
                 case MSG_LOAD_SUCCESS:
-                    Util.showToast(MainActivity.this,"Parse Succeed");
+                    Util.showToast(MainActivity.this, "Parse Succeed");
                     isLoaded = true;
                     break;
 
                 case MSG_LOAD_FAILED:
-                    Util.showToast(MainActivity.this,"Parse Failed");
+                    Util.showToast(MainActivity.this, "Parse Failed");
                     break;
             }
         }
@@ -111,19 +136,20 @@ public class MainActivity extends AppCompatActivity
 
     //初始化 位置按钮
     public void initHeadMenu() {
-        locationButton = findViewById(R.id.toolbar_button);
-        locationButton.setOnClickListener(new View.OnClickListener() {
+        locationImageButton = findViewById(R.id.toolbar_button);
+        locationImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isLoaded) {
                     showPickerView();
                 } else {
-                    Util.showToast(MainActivity.this,"Please waiting until the data is parsed");
+                    Util.showToast(MainActivity.this, "Please waiting until the data is parsed");
                 }
             }
         });
 
     }
+
     private void showPickerView() {// 弹出选择器
 
         OptionsPickerView pvOptions = new OptionsPickerBuilder(this, new OnOptionsSelectListener() {
@@ -144,7 +170,7 @@ public class MainActivity extends AppCompatActivity
 
                 String tx = opt1tx + opt2tx + opt3tx;
                 AddressUtil.setLocationCode(tx);
-                Util.showToast(MainActivity.this,tx);
+                Util.showToast(MainActivity.this, tx);
             }
         })
 
@@ -157,6 +183,7 @@ public class MainActivity extends AppCompatActivity
         pvOptions.setPicker(options1Items, options2Items, options3Items);//三级选择器
         pvOptions.show();
     }
+
     private void initJsonData() {//解析数据
 
         /**
@@ -221,24 +248,25 @@ public class MainActivity extends AppCompatActivity
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Util.showToast(this,"解析Json数据失败");
+            Util.showToast(this, "解析Json数据失败");
         }
         return detail;
     }
 
     //加载侧边栏
-    public void initView() {
+    public void initNavView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setTitle(" ");
 
         setSupportActionBar(toolbar);
-
+        //浮动按钮
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Util.showToast(MainActivity.this, "购物车");
             }
         });
 
@@ -248,8 +276,86 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //侧边导航栏
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        loadNavMentAndHeadView();
+    }
+
+    /**
+     * 加载侧边的菜单按钮点击事件和头部登录点击事件
+     */
+    public void loadNavMentAndHeadView() {
+        View headView = navigationView.getHeaderView(0);
+        loginRegistImageButtom = (ImageButton) headView.findViewById(R.id.imageButton_Login);
+        loginRegisterTextView = (TextView) headView.findViewById(R.id.textView_LoginAndRegist);
+        userNameTextView = (TextView) headView.findViewById(R.id.textView_UserName);
+        settingButton = (Button) headView.findViewById(R.id.button_Setting);
+        //登录成功的状态
+        if (loginStatus == 1) {
+            if (!userName.isEmpty()) {
+                userNameTextView.setText(userName);
+            }
+            loginRegisterTextView.setText(EXIT);
+            userNameTextView.setOnClickListener(new View.OnClickListener() {
+                //进入用户信息设置
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, UserInformationActivity.class);
+                    intent.putExtra("id", userId);
+                    intent.putExtra("name", name);
+                    intent.putExtra("email", email);
+                    intent.putExtra("phoneNumber", phoneNumber);
+                    intent.putExtra("address", address);
+                    intent.putExtra("sex", sex);
+                    intent.putExtra("avatar", avatar);
+                    startActivityForResult(intent, requestCode_USERINFO);
+                }
+            });
+            loginRegistImageButtom.setOnClickListener(new View.OnClickListener() {
+                //进入用户信息设置
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            loginRegisterTextView.setOnClickListener(new View.OnClickListener() {
+                //退出登录
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        } else { //未登录
+            loginRegistImageButtom.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+            loginRegisterTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+            userNameTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+        //设置
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SettingActivity.actionStart(MainActivity.this);
+            }
+        });
+
     }
 
     public void initStaticView() {
@@ -259,9 +365,11 @@ public class MainActivity extends AppCompatActivity
         InitBaseDate(); //加载基础数据
         initHeadMenu(); //加载顶部菜单栏
     }
+
     public void InitBaseDate() {
         mHandler.sendEmptyMessage(MSG_LOAD_DATA);
     }
+
     public void InitTextView() {
         firstText = findViewById(R.id.textView_today);
         scendText = findViewById(R.id.textView_future);
@@ -288,7 +396,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void InitViewPager() {
-        viewPager = findViewById(R.id.mainViewPage) ;
+        viewPager = findViewById(R.id.mainViewPage);
         viewPager.setAdapter(new AppFragmentPageAdapter(fragmentManager, fragmentArrayList));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -298,7 +406,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int i) {
-                for(TextView textView : textViewArrayList) {  //把未选中的设为默认颜色
+                for (TextView textView : textViewArrayList) {  //把未选中的设为默认颜色
                     textView.setTextColor(mDefaultColor);
                 }
                 textViewArrayList.get(i).setTextColor(mActiveColor);
@@ -311,6 +419,100 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
+
+
+    /**
+     * startActivityForResult(Intent intent, int requestCode)方法打开新的Activity，
+     * 新的Activity 关闭后会向前面的Activity传回数据，为了得到传回的数据，必须在前面的Activity中
+     * 重写onActivityResult(int requestCode, int resultCode, Intent data)方法。
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            /*case REQUEST_CODE_SCAN:
+                // 扫描二维码/条码回传
+                if (resultCode == RESULT_OK) {
+                    if (data != null) {
+                        String content = data.getStringExtra(DECODED_CONTENT_KEY);
+                        Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
+                        if (content.indexOf("-") != -1) {
+                            String foodId = interceptString(content);//获得食物id
+                            Activity_FoodsDetails.actionStart(context, Integer.parseInt(foodId.trim()));
+                        } else {
+                            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(Activity_Main.this);
+                            builder.setTitle("请扫描懒人外卖专用二维码,你扫描到的内容是：");
+                            builder.setCancelable(false);
+                            builder.setMessage(content);
+                            builder.setPositiveButton(android.R.string.ok,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog,
+                                                            int which) {
+
+                                        }
+                                    });
+                            builder.create().show();
+                        }
+                    }
+                }
+                break;*/
+            case requestCode_USERINFO:
+                if (resultCode == RESULT_OK) {
+                    loginStatus = data.getIntExtra("statusCode", 0);
+                    if (loginStatus != 0) {
+                        //不刷新底部导航
+                        isRefresh = false;
+                        getData();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 获取fragment数据
+     */
+    private void getData() {
+        progressDialog.setMessage("数据加载中...");
+        progressDialog.show();
+        if(loginStatus == 1) {
+            new Thread(getUserInfo).start();
+        }
+        new Thread(getFirstFragment).start();
+        new Thread(getOtherFragment).start();
+    }
+
+    private Runnable getFirstFragment = new Runnable() {
+        @Override
+        public void run() {
+
+
+        }
+    };
+
+    private Runnable getOtherFragment = new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    };
+
+    private Runnable getUserInfo = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                user = UserService.getUserInfoForPhoneNumber(phoneNumber);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     public void onBackPressed() {
@@ -365,5 +567,32 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * @param context
+     * @param phoneNumber 电话号码
+     * @param statusCode  登录状态码
+     */
+    public static void actionStart(Context context, String phoneNumber, int statusCode) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("phoneNumber", phoneNumber);
+        intent.putExtra("statusCode", statusCode);
+        context.startActivity(intent);
+    }
+
+    private void getIntentData() {
+//        Intent intent = getIntent();
+//        phoneNumber = intent.getStringExtra("phoneNumber");
+//        statusCode = intent.getIntExtra("statusCode", -1);
+        // 轻量级的存储类，用来保存应用的一些常用配置 getSharedPreferences()获取
+        SharedPreferences preferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
+        loginStatus = preferences.getInt("statusCode", 0);
+        phoneNumber = preferences.getString("phoneNumber", "");
+
+        GetUserData data = new GetUserData();
+        user = data.getUser(MainActivity.this);
+        userName = user.getName();
     }
 }

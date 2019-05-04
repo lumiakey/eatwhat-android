@@ -7,12 +7,12 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 
-import com.what2e.eatwhat.tool.NetworkTools;
+import com.what2e.eatwhat.tools.NetworkTools;
 
 
 public class Util {
     private static AlertDialog mAlertDialog;
-    public static String Url = "http://127.0.0.1/EatWhat-API/";
+    public static String Url = "http://localhost:8080/eatwhat_api_war/";
     private static Toast toast;
     private static boolean IsConnect = true;
 
