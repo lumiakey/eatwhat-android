@@ -1,125 +1,143 @@
 package com.what2e.eatwhat.bean;
 
-import java.util.Date;
+import java.util.List;
 
 public class Food {
-    private Integer foodId;
 
-    private String foodName;
+    /**
+     * success : 1
+     * code : 1000
+     * msg : 获取菜单成功
+     * result : {"foodList":[{"food_id":"1","food_name":"豆浆油条","timeTips":"早餐","foodPicture":"http://img4.imgtn.bdimg.com/it/u=2153937626,1074119156&fm=26&gp=0.jpg","foodDesc":"经典","foodPrice":"6.6"},{"food_id":"2","food_name":"农家小炒肉","timeTips":"晚餐","foodPicture":"http://img4.imgtn.bdimg.com/it/u=2153937626,1074119156&fm=26&gp=0.jpg","foodDesc":"经典湘菜，无辣不欢","foodPrice":"16.8"},{"food_id":"3","food_name":"皮蛋豆花","timeTips":"午餐","foodPicture":"http://img4.imgtn.bdimg.com/it/u=2153937626,1074119156&fm=26&gp=0.jpg","foodDesc":"经典","foodPrice":"9.9"}]}
+     */
 
-    private String foodPrice;
+    private String success;
+    private String code;
+    private String msg;
+    private ResultBean result;
 
-    private String foodPicture;
-
-    private Integer inventory;
-
-    private String foodLocation;
-
-    private String timeTips;
-
-    private String foodDesc;
-
-    private Integer foodStateFlag;
-
-    private Date inTime;
-
-    private Date putTime;
-
-    private Date downTime;
-
-    public Integer getFoodId() {
-        return foodId;
+    public String getSuccess() {
+        return success;
     }
 
-    public void setFoodId(Integer foodId) {
-        this.foodId = foodId;
+    public void setSuccess(String success) {
+        this.success = success;
     }
 
-    public String getFoodName() {
-        return foodName;
+    public String getCode() {
+        return code;
     }
 
-    public void setFoodName(String foodName) {
-        this.foodName = foodName == null ? null : foodName.trim();
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public String getFoodPrice() {
-        return foodPrice;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setFoodPrice(String foodPrice) {
-        this.foodPrice = foodPrice == null ? null : foodPrice.trim();
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public String getFoodPicture() {
-        return foodPicture;
+    public ResultBean getResult() {
+        return result;
     }
 
-    public void setFoodPicture(String foodPicture) {
-        this.foodPicture = foodPicture == null ? null : foodPicture.trim();
+    public void setResult(ResultBean result) {
+        this.result = result;
     }
 
-    public Integer getInventory() {
-        return inventory;
-    }
+    public static class ResultBean {
+        private List<FoodListBean> foodList;
 
-    public void setInventory(Integer inventory) {
-        this.inventory = inventory;
-    }
+        public List<FoodListBean> getFoodList() {
+            return foodList;
+        }
 
-    public String getFoodLocation() {
-        return foodLocation;
-    }
+        public void setFoodList(List<FoodListBean> foodList) {
+            this.foodList = foodList;
+        }
 
-    public void setFoodLocation(String foodLocation) {
-        this.foodLocation = foodLocation == null ? null : foodLocation.trim();
-    }
+        public static class FoodListBean {
+            /**
+             * food_id : 1
+             * food_name : 豆浆油条
+             * timeTips : 早餐
+             * foodPicture : http://img4.imgtn.bdimg.com/it/u=2153937626,1074119156&fm=26&gp=0.jpg
+             * foodDesc : 经典
+             * foodPrice : 6.6
+             */
 
-    public String getTimeTips() {
-        return timeTips;
-    }
+            private String food_id;
+            private String food_name;
+            private String timeTips;
+            private String foodPicture;
+            private String foodDesc;
+            private String foodPrice;
+            private int count;
 
-    public void setTimeTips(String timeTips) {
-        this.timeTips = timeTips == null ? null : timeTips.trim();
-    }
+            public int getCount() {
+                return count;
+            }
 
-    public String getFoodDesc() {
-        return foodDesc;
-    }
+            public void pushCount() {
+                count++;
+            }
 
-    public void setFoodDesc(String foodDesc) {
-        this.foodDesc = foodDesc == null ? null : foodDesc.trim();
-    }
+            public void popCount() {
+                if (count > 0) {
+                    count--;
+                }
+            }
 
-    public Integer getFoodStateFlag() {
-        return foodStateFlag;
-    }
+            public String getFood_id() {
+                return food_id;
+            }
 
-    public void setFoodStateFlag(Integer foodStateFlag) {
-        this.foodStateFlag = foodStateFlag;
-    }
+            public void setFood_id(String food_id) {
+                this.food_id = food_id;
+            }
 
-    public Date getInTime() {
-        return inTime;
-    }
+            public String getFood_name() {
+                return food_name;
+            }
 
-    public void setInTime(Date inTime) {
-        this.inTime = inTime;
-    }
+            public void setFood_name(String food_name) {
+                this.food_name = food_name;
+            }
 
-    public Date getPutTime() {
-        return putTime;
-    }
+            public String getTimeTips() {
+                return timeTips;
+            }
 
-    public void setPutTime(Date putTime) {
-        this.putTime = putTime;
-    }
+            public void setTimeTips(String timeTips) {
+                this.timeTips = timeTips;
+            }
 
-    public Date getDownTime() {
-        return downTime;
-    }
+            public String getFoodPicture() {
+                return foodPicture;
+            }
 
-    public void setDownTime(Date downTime) {
-        this.downTime = downTime;
+            public void setFoodPicture(String foodPicture) {
+                this.foodPicture = foodPicture;
+            }
+
+            public String getFoodDesc() {
+                return foodDesc;
+            }
+
+            public void setFoodDesc(String foodDesc) {
+                this.foodDesc = foodDesc;
+            }
+
+            public String getFoodPrice() {
+                return foodPrice;
+            }
+
+            public void setFoodPrice(String foodPrice) {
+                this.foodPrice = foodPrice;
+            }
+        }
     }
 }
