@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="300dp">
+
+    <TextView
+        android:id="@+id/tv_shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:text="购物车"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/clear_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="清空"
+        android:textColor="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_shop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_shop" />
+
+    <ImageView
+        android:id="@+id/iv_shop"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@color/gray"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:src="@drawable/shopping_cart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_y"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/gray"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:text="￥"
+        android:textColor="@color/orange"
+        app:layout_constraintBottom_toBottomOf="@id/iv_shop"
+        app:layout_constraintStart_toEndOf="@id/iv_shop"
+        app:layout_constraintTop_toTopOf="@id/iv_shop" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/gray"
+        android:gravity="center_vertical"
+        android:text="10.00"
+        android:textColor="@color/orange"
+        app:layout_constraintBottom_toBottomOf="@id/iv_shop"
+        app:layout_constraintEnd_toStartOf="@id/jiesuan"
+        app:layout_constraintStart_toEndOf="@id/tv_y"
+        app:layout_constraintTop_toTopOf="@id/iv_shop" />
+
+    <TextView
+        android:id="@+id/jiesuan"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/blue"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingEnd="20dp"
+        android:text="去结算"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_shop" />
+
+    <TextView
+        android:id="@+id/tv_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/count_bg"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:text="111"
+        android:textColor="@color/white"
+        android:textSize="9sp"
+        app:layout_constraintEnd_toEndOf="@id/iv_shop"
+        app:layout_constraintTop_toTopOf="@id/iv_shop" />
+
+</android.support.constraint.ConstraintLayout>

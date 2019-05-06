@@ -7,6 +7,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
@@ -21,12 +22,12 @@
             </intent-filter>
         </activity>
         <activity android:name="com.what2e.eatwhat.MainActivity" />
-        <activity android:name=".RegisterActivity"/>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".SettingActivity"/>
-        <activity android:name=".FeedbackActivity"/>
-        <activity android:name=".ChangeUserInfoActivity"/>
-        <activity android:name=".UserInformationActivity"/>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".FeedbackActivity" />
+        <activity android:name=".ChangeUserInfoActivity" />
+        <activity android:name=".UserInformationActivity" />
 
 
     </application>
@@ -44,7 +45,7 @@
     <!-- 网络相关 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
