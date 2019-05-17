@@ -1,7 +1,7 @@
 package com.what2e.eatwhat.bean;
 
 
-import com.contrarywind.interfaces.IPickerViewData;
+import com.airsaid.pickerviewlibrary.model.IPickerViewData;
 
 import java.util.List;
 
