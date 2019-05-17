@@ -267,7 +267,8 @@ public class MainActivity extends BaseActivity
         toggle.syncState();
 
         //侧边导航栏
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         loadNavMentAndHeadView();
     }
 
@@ -415,6 +416,7 @@ public class MainActivity extends BaseActivity
      * startActivityForResult(Intent intent, int requestCode)方法打开新的Activity，
      * 新的Activity 关闭后会向前面的Activity传回数据，为了得到传回的数据，必须在前面的Activity中
      * 重写onActivityResult(int requestCode, int resultCode, Intent data)方法。
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -471,7 +473,7 @@ public class MainActivity extends BaseActivity
     private void getData() {
         progressDialog.setMessage("数据加载中...");
         progressDialog.show();
-        if(loginStatus == 1) {
+        if (loginStatus == 1) {
             new Thread(getUserInfo).start();
         }
         new Thread(getFirstFragment).start();
@@ -542,8 +544,9 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        //订单
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            startActivity(new Intent(this, OrderListActivity.class));
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_manage) {
