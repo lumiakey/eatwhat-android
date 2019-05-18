@@ -16,6 +16,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -50,6 +51,7 @@ import com.what2e.eatwhat.tools.dialog.ProgressDialog;
 import com.what2e.eatwhat.util.AddressUtil;
 import com.what2e.eatwhat.util.GetJsonDataUtil;
 import com.what2e.eatwhat.util.GetUserData;
+import com.what2e.eatwhat.util.UserUtils;
 import com.what2e.eatwhat.util.Util;
 
 import org.json.JSONArray;
@@ -58,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -289,6 +292,10 @@ public class MainActivity extends BaseActivity
         loginRegisterTextView = (TextView) headView.findViewById(R.id.textView_LoginAndRegist);
         userNameTextView = (TextView) headView.findViewById(R.id.textView_UserName);
         settingButton = (Button) headView.findViewById(R.id.button_Setting);
+        if (!TextUtils.isEmpty(UserUtils.getUserId())) {
+            loginRegisterTextView.setVisibility(View.INVISIBLE);
+            userNameTextView.setText(UserUtils.getName());
+        }
         //登录成功的状态
         if (loginStatus == 1) {
             if (!userName.isEmpty()) {
@@ -503,9 +510,7 @@ public class MainActivity extends BaseActivity
         @Override
         public void run() {
             try {
-                SharedPreferences preferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
-                String token = preferences.getString("token", null);
-                Api.api.getUserInfo(phoneNumber, token)
+                Api.api.getUserInfo(phoneNumber, UserUtils.getToken())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
@@ -514,9 +519,13 @@ public class MainActivity extends BaseActivity
                             }
                             if ("1000".equals(result.getCode())) {
                                 user = result.getResult();
+                                UserUtils.insert("uid", user.getuId() + "");
+                                UserUtils.insert("uName", user.getuName());
                             } else {
                                 throw new Exception(result.getMsg());
                             }
+                        }, throwable -> {
+                            throwable.printStackTrace();
                         });
                 handler.post(runnableUserBusns);
             } catch (Exception e) {

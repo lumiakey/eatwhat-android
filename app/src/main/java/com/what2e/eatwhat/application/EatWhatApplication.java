@@ -1,5 +1,7 @@
 package com.what2e.eatwhat.application;
 
+import android.content.Context;
+
 import com.what2e.eatwhat.bean.User;
 import com.what2e.eatwhat.util.AssetsCopyUtil;
 
@@ -16,10 +18,14 @@ public class EatWhatApplication extends LitePalApplication {
     public String versionName;
     private User user;
 
+    public static Context sContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
         AssetsCopyUtil.copyEmbassy2Databases(this, "data/data/" + this.getPackageName() + "/databases/",
                 "location.db");
+
+        sContext = this;
     }
 }

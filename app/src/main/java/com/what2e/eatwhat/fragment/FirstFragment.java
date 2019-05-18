@@ -194,7 +194,7 @@ public class FirstFragment extends Fragment {
     private void commitOrder(List<Food> data, int payType) {
         OrderRequest order = new OrderRequest();
         order.setUserId(UserUtils.getUserId());
-        order.setAddressId("地址");
+        order.setAddress("地址");
         order.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         order.setOrderRemarks("备注");
         List<OrderRequest.OrderDescBean> orderDesc = new ArrayList<>();
@@ -220,7 +220,7 @@ public class FirstFragment extends Fragment {
                     if ("1000".equals(orderResultBaseResult.getCode())) {
 
                         //付款
-                        Api.api.payment(UserUtils.getUserId(), payType, UserUtils.getToken())
+                        Api.api.payment(orderResultBaseResult.getResult().getStatusDescription(), payType, UserUtils.getToken())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(baseResult -> {

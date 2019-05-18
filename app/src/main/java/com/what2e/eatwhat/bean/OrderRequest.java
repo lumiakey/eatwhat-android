@@ -16,7 +16,7 @@ public class OrderRequest {
     private String userId;
     private String orderRemarks;
     private String orderPrice;
-    private String addressId;
+    private String address;
     private String createTime;
     private List<OrderDescBean> orderDesc;
 
@@ -44,12 +44,12 @@ public class OrderRequest {
         this.orderPrice = orderPrice;
     }
 
-    public String getAddressId() {
-        return addressId;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getCreateTime() {
