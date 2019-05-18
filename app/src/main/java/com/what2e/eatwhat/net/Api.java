@@ -34,7 +34,7 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("user/getUserInfo")
-    Observable<BaseResult<User>> getUserInfo(@Field("locationCode") String phonenumber, @Field("time") String token);
+    Observable<BaseResult<User>> getUserInfo(@Field("locationCode") String phonenumber, @Field("token") String token);
 
     /**
      * 获取信息列表
@@ -63,7 +63,7 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("/order/payment")
-    Observable<BaseResult> payment(@Field("userId") String userId, @Field("paymentType") int paymentType, @Field("token") String token);
+    Observable<BaseResult> payment(@Field("orderId") String orderId, @Field("paymentType") int paymentType, @Field("token") String token);
 
     /**
      * 获取订单列表
