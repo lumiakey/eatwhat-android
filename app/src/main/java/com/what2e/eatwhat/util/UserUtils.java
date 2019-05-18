@@ -7,10 +7,10 @@ public class UserUtils {
     
     public static String getToken() {
 
-        return "";
+        return "sss";
     }
 
     public static String getUserId() {
-        return null;
+        return "1";
     }
 }

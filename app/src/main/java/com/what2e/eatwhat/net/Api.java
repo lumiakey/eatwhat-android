@@ -32,14 +32,14 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("food/getFoodList")
-    Observable<BaseResult<Food>> fetchFoods(@Field("locationCode") String locationCode, @Field("time") String time);
+    Observable<BaseResult<List<Food>>> fetchFoods(@Field("locationCode") String locationCode, @Field("time") String time);
 
     /**
      * 提交订单
      */
     @FormUrlEncoded
     @POST("order/submitOrders")
-    Observable<BaseResult<OrderResult>> submitOrders(@Field("order") OrderRequest order, @Field("token") String token);
+    Observable<BaseResult<OrderResult>> submitOrders(@Field("order") String order, @Field("token") String token);
 
     /**
      * 付款
