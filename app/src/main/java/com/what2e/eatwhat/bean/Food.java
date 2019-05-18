@@ -23,27 +23,27 @@ public class Food {
          * foodPrice : 6.6
          */
 
-        private String food_id;
-        private String food_name;
+        private String foodId;
+        private String foodName;
         private String timeTips;
         private String foodPicture;
         private String foodDesc;
         private String foodPrice;
 
-        public String getFood_id() {
-            return food_id;
+        public String getFoodId() {
+            return foodId;
         }
 
-        public void setFood_id(String food_id) {
-            this.food_id = food_id;
+        public void setFoodId(String foodId) {
+            this.foodId = foodId;
         }
 
-        public String getFood_name() {
-            return food_name;
+        public String getFoodName() {
+            return foodName;
         }
 
-        public void setFood_name(String food_name) {
-            this.food_name = food_name;
+        public void setFoodName(String foodName) {
+            this.foodName = foodName;
         }
 
         public String getTimeTips() {

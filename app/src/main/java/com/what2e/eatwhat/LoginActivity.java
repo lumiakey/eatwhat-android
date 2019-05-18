@@ -40,7 +40,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private TextView other_login, tv_register, tv_forget_password;
     private Button login;
     private EditText etPhoneNumber, etPwd, VF_Code;
-    private String phoneNumber, password;
+    private String phoneNumber, password,token;
     private User user;
 
     private int statusCode = 0;
@@ -190,7 +190,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void run() {
             Gson gson = new Gson();
-            if (postForm == null || postForm.isEmpty() || postForm.length() > 100) {
+            if (postForm == null || postForm.isEmpty() || postForm.length() > 1000) {
                 Util.showToast(LoginActivity.this, "服务器出错，请求失败！");
                 progress.dismiss();
                 return;
@@ -198,12 +198,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 RequestResult requestResult = gson.fromJson(postForm, RequestResult.class);
                 LoginStatus loginStatus = gson.fromJson(requestResult.getResult().toString(), LoginStatus.class);
                 statusCode = loginStatus.getStatusCode();
+                token = loginStatus.getStatusDescription();
                 if (statusCode == 200) {
                     //保存用户登录信息到本地
                     SharedPreferences sharedPreferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
                     SharedPreferences.Editor editors = sharedPreferences.edit();//获取编辑器
                     editors.putString("phoneNumber", phoneNumber);
                     editors.putString("password", password);
+                    editors.putString("token", token);
                     editors.putInt("statusCode", statusCode);
                     editors.commit();//提交修改
                     MainActivity.actionStart(LoginActivity.this, phoneNumber, statusCode);

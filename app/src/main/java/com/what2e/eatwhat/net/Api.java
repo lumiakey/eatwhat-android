@@ -31,7 +31,7 @@ public interface Api {
      * 获取首页食物数据
      */
     @FormUrlEncoded
-    @POST("firstFragment/getFoodList")
+    @POST("food/getFoodList")
     Observable<BaseResult<Food>> fetchFoods(@Field("locationCode") String locationCode, @Field("time") String time);
 
     /**

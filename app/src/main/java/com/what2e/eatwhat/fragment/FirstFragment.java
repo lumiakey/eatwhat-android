@@ -86,7 +86,7 @@ public class FirstFragment extends Fragment {
             @Override
             protected void convert(BaseViewHolder helper, Food.FoodListBean item) {
                 helper.setText(R.id.tv_time_tips, item.getTimeTips());
-                helper.setText(R.id.name, item.getFood_name());
+                helper.setText(R.id.name, item.getFoodName());
                 Picasso.with(helper.itemView.getContext())
                         .load(item.getFoodPicture())
                         .into((ImageView) helper.getView(R.id.food_picture));
@@ -134,7 +134,7 @@ public class FirstFragment extends Fragment {
 
             @Override
             protected void convert(BaseViewHolder helper, Food.FoodListBean item) {
-                helper.setText(R.id.name, item.getFood_name());
+                helper.setText(R.id.name, item.getFoodName());
                 helper.setText(R.id.price, item.getFoodPrice());
                 ShoppingCountView shoppingCountView = helper.getView(R.id.count);
                 shoppingCountView.setShoppingCount(item.getCount());
@@ -200,7 +200,7 @@ public class FirstFragment extends Fragment {
         for (Food.FoodListBean datum : data) {
             OrderRequest.OrderDescBean orderDescBean = new OrderRequest.OrderDescBean();
             orderDescBean.setFoodId(datum.getCount());
-            orderDescBean.setFoodName(datum.getFood_name());
+            orderDescBean.setFoodName(datum.getFoodName());
             orderDescBean.setFoodPrice(datum.getFoodPrice());
             orderDescBean.setOrderAmount(datum.getCount());
         }
@@ -285,7 +285,8 @@ public class FirstFragment extends Fragment {
     @SuppressLint("CheckResult")
     private void getData() {
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        Api.api.fetchFoods("", time)
+
+        Api.api.fetchFoods("贵州贵阳", "2019-05-10 00:00:01")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(food -> {
