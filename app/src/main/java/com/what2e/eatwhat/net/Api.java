@@ -41,7 +41,7 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("information/getInformationList")
-    Observable<BaseResult<Information>> getInformation(@Field("locationCode") String locationCode, @Field("time") String time);
+    Observable<BaseResult<List<Information>>> getInformation(@Field("locationCode") String locationCode, @Field("time") String time);
 
 
     /**

@@ -3,20 +3,24 @@ package com.what2e.eatwhat.fragment;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +34,7 @@ import com.what2e.eatwhat.OrderListActivity;
 import com.what2e.eatwhat.R;
 import com.what2e.eatwhat.bean.BaseResult;
 import com.what2e.eatwhat.bean.Food;
+import com.what2e.eatwhat.bean.Information;
 import com.what2e.eatwhat.bean.OrderRequest;
 import com.what2e.eatwhat.bean.OrderResult;
 import com.what2e.eatwhat.net.Api;
@@ -63,6 +68,7 @@ public class FirstFragment extends Fragment {
     private String totalPrice;
     private AlertDialog payLoadDialog;
     private BottomSheetDialog bottomSheetDialog;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +116,40 @@ public class FirstFragment extends Fragment {
             }
         };
         recyclerView.setAdapter(adapter);
+
+        swipeRefreshLayout = view.findViewById(R.id.srl);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            getData();
+            getInfo();
+        });
+        swipeRefreshLayout.setEnabled(false);
         getData();
+        getInfo();
+    }
+
+    String address = "贵州贵阳";
+
+    String date = "2019-05-16 00:00:01";
+
+    private void getInfo() {
+        Api.api.getInformation(address, date)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(informationBaseResult -> {
+                    if ("1000".equals(informationBaseResult.getCode())) {
+                        if (informationBaseResult.getResult() == null) return;
+                        for (Information information : informationBaseResult.getResult()) {
+                            ImageView imageView = new ImageView(getContext());
+                            imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, getResources().getDisplayMetrics())));
+                            Picasso.with(getContext())
+                                    .load(information.getInfoPicture())
+                                    .into(imageView);
+                            adapter.addFooterView(imageView);
+                        }
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                });
     }
 
     private void showBottomSheet() {
@@ -294,12 +333,15 @@ public class FirstFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getData() {
+        swipeRefreshLayout.setEnabled(false);
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
         Api.api.fetchFoods("贵州贵阳", "2019-05-10 00:00:01")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(data -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout.setEnabled(true);
                     if (data == null) return false;
                     if ("1000".equals(data.getCode())) {
                         List<Food> foods = data.getResult();
@@ -315,6 +357,8 @@ public class FirstFragment extends Fragment {
                 .subscribe(foodListBeans -> {
                     adapter.setNewData(foodListBeans);
                 }, throwable -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    swipeRefreshLayout.setEnabled(true);
                     throwable.printStackTrace();
                     Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                 });
