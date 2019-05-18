@@ -32,7 +32,7 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("food/getFoodList")
-    Observable<BaseResult<Food>> fetchFoods(@Field("locationCode") String locationCode, @Field("time") String time);
+    Observable<BaseResult<List<Food>>> fetchFoods(@Field("locationCode") String locationCode, @Field("time") String time);
 
     /**
      * 提交订单

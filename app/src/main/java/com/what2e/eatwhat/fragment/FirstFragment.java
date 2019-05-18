@@ -52,8 +52,8 @@ import io.reactivex.schedulers.Schedulers;
 public class FirstFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private BaseQuickAdapter<Food.FoodListBean, BaseViewHolder> adapter;
-    private BaseQuickAdapter<Food.FoodListBean, BaseViewHolder> bottomDialogAdapter;
+    private BaseQuickAdapter<Food, BaseViewHolder> adapter;
+    private BaseQuickAdapter<Food, BaseViewHolder> bottomDialogAdapter;
     private TextView tvBottomCount;
     private TextView tvBottomPrice;
     private boolean zhifubaoed;
@@ -82,9 +82,9 @@ public class FirstFragment extends Fragment {
             showBottomSheet();
         });
 
-        adapter = new BaseQuickAdapter<Food.FoodListBean, BaseViewHolder>(R.layout.food_item, null) {
+        adapter = new BaseQuickAdapter<Food, BaseViewHolder>(R.layout.food_item, null) {
             @Override
-            protected void convert(BaseViewHolder helper, Food.FoodListBean item) {
+            protected void convert(BaseViewHolder helper, Food item) {
                 helper.setText(R.id.tv_time_tips, item.getTimeTips());
                 helper.setText(R.id.name, item.getFoodName());
                 Picasso.with(helper.itemView.getContext())
@@ -111,7 +111,7 @@ public class FirstFragment extends Fragment {
     }
 
     private void showBottomSheet() {
-        final List<Food.FoodListBean> select = getSelect(adapter.getData());
+        final List<Food> select = getSelect(adapter.getData());
         if (select == null || select.size() == 0) {
             Toast.makeText(getContext(), "请点餐", Toast.LENGTH_SHORT).show();
             return;
@@ -122,7 +122,7 @@ public class FirstFragment extends Fragment {
         tvBottomCount = bottomSheetDialog.findViewById(R.id.tv_count);
         tvBottomPrice = bottomSheetDialog.findViewById(R.id.price);
         bottomSheetDialog.findViewById(R.id.jiesuan).setOnClickListener(v -> {
-            List<Food.FoodListBean> data = getSelect(adapter.getData());
+            List<Food> data = getSelect(adapter.getData());
             if (data == null || data.size() == 0) {
                 Toast.makeText(getContext(), "请点餐", Toast.LENGTH_SHORT).show();
                 return;
@@ -130,10 +130,10 @@ public class FirstFragment extends Fragment {
             pay(adapter.getData());
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        bottomDialogAdapter = new BaseQuickAdapter<Food.FoodListBean, BaseViewHolder>(R.layout.bootm_sheet_item, select) {
+        bottomDialogAdapter = new BaseQuickAdapter<Food, BaseViewHolder>(R.layout.bootm_sheet_item, select) {
 
             @Override
-            protected void convert(BaseViewHolder helper, Food.FoodListBean item) {
+            protected void convert(BaseViewHolder helper, Food item) {
                 helper.setText(R.id.name, item.getFoodName());
                 helper.setText(R.id.price, item.getFoodPrice());
                 ShoppingCountView shoppingCountView = helper.getView(R.id.count);
@@ -159,7 +159,7 @@ public class FirstFragment extends Fragment {
         bottomSheetDialog.setOnDismissListener(dialog -> adapter.notifyDataSetChanged());
     }
 
-    private void pay(List<Food.FoodListBean> data) {
+    private void pay(List<Food> data) {
         View inflate = LayoutInflater.from(getContext()).inflate(R.layout.pay_dialog, null);
         View zhifubao = inflate.findViewById(R.id.pay_zhifubao);
         View weixin = inflate.findViewById(R.id.pay_weixin);
@@ -190,14 +190,14 @@ public class FirstFragment extends Fragment {
      * @param data    订单数据
      * @param payType 支付方式
      */
-    private void commitOrder(List<Food.FoodListBean> data, int payType) {
+    private void commitOrder(List<Food> data, int payType) {
         OrderRequest order = new OrderRequest();
         order.setUserId(UserUtils.getUserId());
         order.setAddressId("地址");
         order.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         order.setOrderRemarks("备注");
         List<OrderRequest.OrderDescBean> orderDesc = new ArrayList<>();
-        for (Food.FoodListBean datum : data) {
+        for (Food datum : data) {
             OrderRequest.OrderDescBean orderDescBean = new OrderRequest.OrderDescBean();
             orderDescBean.setFoodId(datum.getCount());
             orderDescBean.setFoodName(datum.getFoodName());
@@ -253,19 +253,19 @@ public class FirstFragment extends Fragment {
         tvBottomPrice.setText(totalPrice);
     }
 
-    private String getTotalPrice(List<Food.FoodListBean> data) {
+    private String getTotalPrice(List<Food> data) {
         float price = 0;
-        for (Food.FoodListBean bean : data) {
+        for (Food bean : data) {
             price += bean.getCount() * Float.parseFloat(bean.getFoodPrice());
         }
         DecimalFormat decimalFormat = new DecimalFormat(".00");
         return decimalFormat.format(price);
     }
 
-    private List<Food.FoodListBean> getSelect(List<Food.FoodListBean> data) {
+    private List<Food> getSelect(List<Food> data) {
         if (data == null) return null;
-        List<Food.FoodListBean> lists = new ArrayList<>();
-        for (Food.FoodListBean datum : data) {
+        List<Food> lists = new ArrayList<>();
+        for (Food datum : data) {
             if (datum.getCount() > 0) {
                 lists.add(datum);
             }
@@ -273,10 +273,10 @@ public class FirstFragment extends Fragment {
         return lists;
     }
 
-    private int getCount(List<Food.FoodListBean> data) {
+    private int getCount(List<Food> data) {
         if (data == null) return 0;
         int count = 0;
-        for (Food.FoodListBean datum : data) {
+        for (Food datum : data) {
             count += datum.getCount();
         }
         return count;
@@ -289,21 +289,19 @@ public class FirstFragment extends Fragment {
         Api.api.fetchFoods("贵州贵阳", "2019-05-10 00:00:01")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(food -> {
-                    if (food == null) return false;
-                    if ("1000".equals(food.getCode())) {
-                        Food result = food.getResult();
-                        if (result == null) return false;
-                        List<Food.FoodListBean> foodList = result.getFoodList();
-                        if (foodList == null || foodList.size() == 0) {
+                .filter(data -> {
+                    if (data == null) return false;
+                    if ("1000".equals(data.getCode())) {
+                        List<Food> foods = data.getResult();
+                        if (foods == null || foods.size() == 0) {
                             throw new Exception("暂无数据");
                         }
                         return true;
                     } else {
-                        throw new Exception(food.getMsg());
+                        throw new Exception(data.getMsg());
                     }
                 })
-                .map(food -> food.getResult().getFoodList())
+                .map(food -> food.getResult())
                 .subscribe(foodListBeans -> {
                     adapter.setNewData(foodListBeans);
                 }, throwable -> {

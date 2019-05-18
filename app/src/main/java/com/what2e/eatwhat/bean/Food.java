@@ -1,97 +1,83 @@
 package com.what2e.eatwhat.bean;
 
-import java.util.List;
-
 public class Food {
-    private List<FoodListBean> foodList;
+    /**
+     * foodId : 2
+     * foodName : 豆浆油条
+     * foodPrice : 6.9
+     * foodPicture : https://pic1.zhimg.com/v2-2f58a3a468eb3ec6573ab6af889f62bf_1200x500.jpg
+     * timeTips : 早餐
+     * foodDesc : 经典早餐
+     */
 
-    public List<FoodListBean> getFoodList() {
-        return foodList;
+    private int foodId;
+    private String foodName;
+    private String foodPrice;
+    private String foodPicture;
+    private String timeTips;
+    private String foodDesc;
+
+    public int getFoodId() {
+        return foodId;
     }
 
-    public void setFoodList(List<FoodListBean> foodList) {
-        this.foodList = foodList;
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
     }
 
-    public static class FoodListBean {
-        /**
-         * food_id : 1
-         * food_name : 豆浆油条
-         * timeTips : 早餐
-         * foodPicture : http://img4.imgtn.bdimg.com/it/u=2153937626,1074119156&fm=26&gp=0.jpg
-         * foodDesc : 经典
-         * foodPrice : 6.6
-         */
+    public String getFoodName() {
+        return foodName;
+    }
 
-        private String foodId;
-        private String foodName;
-        private String timeTips;
-        private String foodPicture;
-        private String foodDesc;
-        private String foodPrice;
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
+    }
 
-        public String getFoodId() {
-            return foodId;
-        }
+    public String getFoodPrice() {
+        return foodPrice;
+    }
 
-        public void setFoodId(String foodId) {
-            this.foodId = foodId;
-        }
+    public void setFoodPrice(String foodPrice) {
+        this.foodPrice = foodPrice;
+    }
 
-        public String getFoodName() {
-            return foodName;
-        }
+    public String getFoodPicture() {
+        return foodPicture;
+    }
 
-        public void setFoodName(String foodName) {
-            this.foodName = foodName;
-        }
+    public void setFoodPicture(String foodPicture) {
+        this.foodPicture = foodPicture;
+    }
 
-        public String getTimeTips() {
-            return timeTips;
-        }
+    public String getTimeTips() {
+        return timeTips;
+    }
 
-        public void setTimeTips(String timeTips) {
-            this.timeTips = timeTips;
-        }
+    public void setTimeTips(String timeTips) {
+        this.timeTips = timeTips;
+    }
 
-        public String getFoodPicture() {
-            return foodPicture;
-        }
+    public String getFoodDesc() {
+        return foodDesc;
+    }
 
-        public void setFoodPicture(String foodPicture) {
-            this.foodPicture = foodPicture;
-        }
+    public void setFoodDesc(String foodDesc) {
+        this.foodDesc = foodDesc;
+    }
 
-        public String getFoodDesc() {
-            return foodDesc;
-        }
+    private int count;
 
-        public void setFoodDesc(String foodDesc) {
-            this.foodDesc = foodDesc;
-        }
+    public int getCount() {
+        return count;
+    }
 
-        public String getFoodPrice() {
-            return foodPrice;
-        }
+    public void pushCount() {
+        count++;
+    }
 
-        public void setFoodPrice(String foodPrice) {
-            this.foodPrice = foodPrice;
-        }
-
-        private int count;
-
-        public int getCount() {
-            return count;
-        }
-
-        public void pushCount() {
-            count++;
-        }
-
-        public void popCount() {
-            if (count > 0) {
-                count--;
-            }
+    public void popCount() {
+        if (count > 0) {
+            count--;
         }
     }
 }
