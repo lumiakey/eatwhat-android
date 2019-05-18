@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity
     private SharedPreferences sharedPreferences;
     public User user;
     public Integer userId;
-    public String address, userName, sex, validity, phoneNumber,uPicture;
+    public String address, userName, sex, validity, phoneNumber, uPicture;
     private static final int MSG_LOAD_DATA = 0x0001;
     private static final int MSG_LOAD_SUCCESS = 0x0002;
     private static final int MSG_LOAD_FAILED = 0x0003;
@@ -474,7 +474,6 @@ public class MainActivity extends BaseActivity
     }
 
 
-
     private Runnable getFirstFragment = new Runnable() {
         @Override
         public void run() {
@@ -497,14 +496,15 @@ public class MainActivity extends BaseActivity
 
     /**
      * 获取用户信息
+     *
      * @return
      */
-     Runnable getUserInfo = new Runnable() {
-        SharedPreferences preferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
-        String token = preferences.getString("token", null);
+    Runnable getUserInfo = new Runnable() {
         @Override
         public void run() {
             try {
+                SharedPreferences preferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
+                String token = preferences.getString("token", null);
                 Api.api.getUserInfo(phoneNumber, token)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -528,7 +528,8 @@ public class MainActivity extends BaseActivity
     Runnable runnableUserBusns = new Runnable() {
         @Override
         public void run() {
-            progressDialog.dismiss();
+            if (progressDialog != null)
+                progressDialog.dismiss();
             if (loginStatus == 200) {
                 if (user != null) {
                     userId = user.getuId();
@@ -542,9 +543,9 @@ public class MainActivity extends BaseActivity
                     editor.putInt("statusCode", loginStatus);//状态码
                     editor.putInt("userId", userId);//用户编号
                     editor.putString("name", userName); //姓名
-                    editor.putString("uPicture",uPicture);
-                    editor.putString("sex",sex);
-                    editor.putString("phoneNumber",phoneNumber);
+                    editor.putString("uPicture", uPicture);
+                    editor.putString("sex", sex);
+                    editor.putString("phoneNumber", phoneNumber);
                     editor.putString("validity", validity);
                     editor.apply();//提交数据
                 }
