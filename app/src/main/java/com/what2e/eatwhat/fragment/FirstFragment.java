@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.what2e.eatwhat.MainActivity;
 import com.what2e.eatwhat.OrderListActivity;
@@ -127,7 +128,7 @@ public class FirstFragment extends Fragment {
                 Toast.makeText(getContext(), "请点餐", Toast.LENGTH_SHORT).show();
                 return;
             }
-            pay(adapter.getData());
+            pay(select);
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         bottomDialogAdapter = new BaseQuickAdapter<Food, BaseViewHolder>(R.layout.bootm_sheet_item, select) {
@@ -203,6 +204,7 @@ public class FirstFragment extends Fragment {
             orderDescBean.setFoodName(datum.getFoodName());
             orderDescBean.setFoodPrice(datum.getFoodPrice());
             orderDescBean.setOrderAmount(datum.getCount());
+            orderDesc.add(orderDescBean);
         }
         order.setOrderDesc(orderDesc);
         order.setOrderPrice(totalPrice);
@@ -211,7 +213,7 @@ public class FirstFragment extends Fragment {
                 .setCancelable(false)
                 .show();
         //提交订单
-        Api.api.submitOrders(order, UserUtils.getToken())
+        Api.api.submitOrders(new Gson().toJson(order), UserUtils.getToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(orderResultBaseResult -> {

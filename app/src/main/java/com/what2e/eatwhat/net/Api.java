@@ -39,7 +39,7 @@ public interface Api {
      */
     @FormUrlEncoded
     @POST("order/submitOrders")
-    Observable<BaseResult<OrderResult>> submitOrders(@Field("order") OrderRequest order, @Field("token") String token);
+    Observable<BaseResult<OrderResult>> submitOrders(@Field("order") String order, @Field("token") String token);
 
     /**
      * 付款
