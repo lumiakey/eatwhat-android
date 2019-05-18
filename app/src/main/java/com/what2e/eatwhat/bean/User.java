@@ -1,64 +1,98 @@
 package com.what2e.eatwhat.bean;
 
 
+import java.util.Date;
+
 public class User {
 
+    private Integer uId;
 
-    private String Id;
-    private String Name;
-    private String PhoneNumber;
-    private String Address;
-    private String Sex;
-    private String HeadPortrait;//头像
+    private String uName;
 
-    public String getId() {
-        return Id;
+    private String phonenumber;
+
+    private String uPicture;
+
+    private String password;
+
+    private String sex;
+
+    private String validity;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    public Integer getuId() {
+        return uId;
     }
 
-    public void setId(String id) {
-        Id = id;
+    public void setuId(Integer uId) {
+        this.uId = uId;
     }
 
-    public String getName() {
-        return Name;
+    public String getuName() {
+        return uName;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setuName(String uName) {
+        this.uName = uName == null ? null : uName.trim();
     }
 
-    public String getPhoneNumber() {
-        return PhoneNumber;
+    public String getPhonenumber() {
+        return phonenumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber == null ? null : phonenumber.trim();
     }
 
-    public String getAddress() {
-        return Address;
+    public String getuPicture() {
+        return uPicture;
     }
 
-    public void setAddress(String address) {
-        Address = address;
+    public void setuPicture(String uPicture) {
+        this.uPicture = uPicture == null ? null : uPicture.trim();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
     }
 
     public String getSex() {
-        return Sex;
+        return sex;
     }
 
     public void setSex(String sex) {
-        Sex = sex;
+        this.sex = sex == null ? null : sex.trim();
     }
 
-    public String getHeadPortrait() {
-        return HeadPortrait;
+    public String getValidity() {
+        return validity;
     }
 
-    public void setHeadPortrait(String headPortrait) {
-        HeadPortrait = headPortrait;
+    public void setValidity(String validity) {
+        this.validity = validity == null ? null : validity.trim();
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
 
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
 }

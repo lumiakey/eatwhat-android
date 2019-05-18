@@ -12,29 +12,31 @@ import com.what2e.eatwhat.bean.User;
  */
 
 public class GetUserData {
-    private String userId, address, name, email, nickname, sex, avatar, phoneNumber;//头像
+
+    private Integer userId;
+    private String  name, validity , uPicture , sex,  phoneNumber;
     private int statusCode;
     private SharedPreferences sharedPreferences;
     public User user = new User();
 
     public User getUser(Context context) {
+
         //读取xml文件到
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        userId = sharedPreferences.getString("userId", "");
-        address = sharedPreferences.getString("address", "");
+        userId = sharedPreferences.getInt("userId", 0);
         name = sharedPreferences.getString("name", "");
-        email = sharedPreferences.getString("email", "");
-        nickname = sharedPreferences.getString("nickname", "");
+        uPicture = sharedPreferences.getString("uPicture", "");
         sex = sharedPreferences.getString("sex", "");
-        avatar = sharedPreferences.getString("avatar", "");
+        validity = sharedPreferences.getString("validity", "");
         phoneNumber = sharedPreferences.getString("phoneNumber", "");
 
         if (sharedPreferences != null) {
-            user.setId(userId);
-            user.setName(name);
-            user.setPhoneNumber(phoneNumber);
+            user.setuId(userId);
+            user.setuName(name);
+            user.setPhonenumber(phoneNumber);
+            user.setuPicture(uPicture);
+            user.setValidity(validity);
             user.setSex(sex);
-            user.setAddress(address);
         }
 
         return user;

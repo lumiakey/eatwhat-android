@@ -2,9 +2,11 @@ package com.what2e.eatwhat.net;
 
 import com.what2e.eatwhat.bean.BaseResult;
 import com.what2e.eatwhat.bean.Food;
+import com.what2e.eatwhat.bean.Information;
 import com.what2e.eatwhat.bean.OrderList;
 import com.what2e.eatwhat.bean.OrderRequest;
 import com.what2e.eatwhat.bean.OrderResult;
+import com.what2e.eatwhat.bean.User;
 
 import java.util.List;
 
@@ -26,6 +28,21 @@ public interface Api {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(Api.class);
+
+    /**
+     * 获取用户信息
+     */
+    @FormUrlEncoded
+    @POST("user/getUserInfo")
+    Observable<BaseResult<User>> getUserInfo(@Field("locationCode") String phonenumber, @Field("time") String token);
+
+    /**
+     * 获取信息列表
+     */
+    @FormUrlEncoded
+    @POST("information/getInformationList")
+    Observable<BaseResult<Information>> getInformation(@Field("locationCode") String locationCode, @Field("time") String time);
+
 
     /**
      * 获取首页食物数据

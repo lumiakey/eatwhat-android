@@ -18,12 +18,19 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.what2e.eatwhat.base.ActivityCollector;
 import com.what2e.eatwhat.base.BaseActivity;
+import com.what2e.eatwhat.bean.Food;
 import com.what2e.eatwhat.bean.LoginStatus;
 import com.what2e.eatwhat.bean.RequestResult;
 import com.what2e.eatwhat.bean.User;
+import com.what2e.eatwhat.net.Api;
 import com.what2e.eatwhat.service.LoginService;
 import com.what2e.eatwhat.tools.VerificationCode;
 import com.what2e.eatwhat.util.Util;
+
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author lumike
@@ -200,7 +207,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 statusCode = loginStatus.getStatusCode();
                 token = loginStatus.getStatusDescription();
                 if (statusCode == 200) {
-                    //保存用户登录信息到本地
+                    //获取用户信息
                     SharedPreferences sharedPreferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
                     SharedPreferences.Editor editors = sharedPreferences.edit();//获取编辑器
                     editors.putString("phoneNumber", phoneNumber);
@@ -210,7 +217,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     editors.commit();//提交修改
                     MainActivity.actionStart(LoginActivity.this, phoneNumber, statusCode);
                 }
-                Util.showToast(LoginActivity.this, loginStatus.getStatusDescription());
+                Util.showToast(LoginActivity.this, "登陆成功");
             }
             progress.dismiss();
         }

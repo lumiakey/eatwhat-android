@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +28,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
 import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
@@ -34,6 +36,7 @@ import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.google.gson.Gson;
 import com.what2e.eatwhat.adapter.AppFragmentPageAdapter;
 import com.what2e.eatwhat.base.BaseActivity;
+import com.what2e.eatwhat.bean.Food;
 import com.what2e.eatwhat.bean.Json;
 import com.what2e.eatwhat.bean.User;
 import com.what2e.eatwhat.fragment.FifthFragment;
@@ -41,6 +44,7 @@ import com.what2e.eatwhat.fragment.FirstFragment;
 import com.what2e.eatwhat.fragment.FourthlyFragment;
 import com.what2e.eatwhat.fragment.ScendFragment;
 import com.what2e.eatwhat.fragment.ThirdlyFragment;
+import com.what2e.eatwhat.net.Api;
 import com.what2e.eatwhat.service.UserService;
 import com.what2e.eatwhat.tools.dialog.ProgressDialog;
 import com.what2e.eatwhat.util.AddressUtil;
@@ -52,6 +56,9 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author lumike
@@ -72,17 +79,17 @@ public class MainActivity extends BaseActivity
     private ArrayList<TextView> textViewArrayList; //存放textView
     private FragmentManager fragmentManager;    //管理fragment
     private Thread thread;
-    private String userName;
     private final String EXIT = "退出登录！";
     public List<Json> options1Items = new ArrayList<>();
     public ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
     public ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
     private boolean isRefresh = true;//控制底部导航栏加载次数，否则再次刷新会重复
     private ProgressDialog progressDialog;
-
+    private Handler handler = new Handler();
+    private SharedPreferences sharedPreferences;
     public User user;
-    public String userId, address, name, email, sex, avatar, phoneNumber;
-
+    public Integer userId;
+    public String address, userName, sex, validity, phoneNumber,uPicture;
     private static final int MSG_LOAD_DATA = 0x0001;
     private static final int MSG_LOAD_SUCCESS = 0x0002;
     private static final int MSG_LOAD_FAILED = 0x0003;
@@ -99,9 +106,10 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getIntentData();
         initNavView();  //加载侧边栏
         initStaticView(); //加载静态资源
-        getIntentData();
+        getData();
     }
 
     @SuppressLint("HandlerLeak")
@@ -293,12 +301,10 @@ public class MainActivity extends BaseActivity
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, UserInformationActivity.class);
                     intent.putExtra("id", userId);
-                    intent.putExtra("name", name);
-                    intent.putExtra("email", email);
+                    intent.putExtra("name", userName);
                     intent.putExtra("phoneNumber", phoneNumber);
                     intent.putExtra("address", address);
                     intent.putExtra("sex", sex);
-                    intent.putExtra("avatar", avatar);
                     startActivityForResult(intent, requestCode_USERINFO);
                 }
             });
@@ -467,18 +473,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    /**
-     * 获取fragment数据
-     */
-    private void getData() {
-        progressDialog.setMessage("数据加载中...");
-        progressDialog.show();
-        if (loginStatus == 1) {
-            new Thread(getUserInfo).start();
-        }
-        new Thread(getFirstFragment).start();
-        new Thread(getOtherFragment).start();
-    }
+
 
     private Runnable getFirstFragment = new Runnable() {
         @Override
@@ -495,16 +490,73 @@ public class MainActivity extends BaseActivity
         }
     };
 
-    private Runnable getUserInfo = new Runnable() {
+    public void getData() {
+        new Thread(getUserInfo).start();
+    }
+
+
+    /**
+     * 获取用户信息
+     * @return
+     */
+     Runnable getUserInfo = new Runnable() {
+        SharedPreferences preferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
+        String token = preferences.getString("token", null);
         @Override
         public void run() {
             try {
-                user = UserService.getUserInfoForPhoneNumber(phoneNumber);
+                Api.api.getUserInfo(phoneNumber, token)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            if (result == null) {
+                                return;
+                            }
+                            if ("1000".equals(result.getCode())) {
+                                user = result.getResult();
+                            } else {
+                                throw new Exception(result.getMsg());
+                            }
+                        });
+                handler.post(runnableUserBusns);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
+
+    Runnable runnableUserBusns = new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.dismiss();
+            if (loginStatus == 200) {
+                if (user != null) {
+                    userId = user.getuId();
+                    userName = user.getuName();
+                    uPicture = user.getuPicture();
+                    sex = user.getSex();
+                    phoneNumber = user.getPhonenumber();
+                    validity = user.getValidity();
+                    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt("statusCode", loginStatus);//状态码
+                    editor.putInt("userId", userId);//用户编号
+                    editor.putString("name", userName); //姓名
+                    editor.putString("uPicture",uPicture);
+                    editor.putString("sex",sex);
+                    editor.putString("phoneNumber",phoneNumber);
+                    editor.putString("validity", validity);
+                    editor.apply();//提交数据
+                }
+            }
+            initView();
+        }
+
+    };
+
+    private void initView() {
+        initNavView();  //加载侧边栏
+    }
 
     @Override
     public void onBackPressed() {
@@ -583,9 +635,8 @@ public class MainActivity extends BaseActivity
         SharedPreferences preferences = getSharedPreferences("LoginInfo", Activity.MODE_PRIVATE);
         loginStatus = preferences.getInt("statusCode", 0);
         phoneNumber = preferences.getString("phoneNumber", "");
-
         GetUserData data = new GetUserData();
         user = data.getUser(MainActivity.this);
-        userName = user.getName();
+        userName = user.getuName();
     }
 }

@@ -35,7 +35,7 @@ public class ChangeUserInfoActivity extends BaseActivity implements View.OnClick
     private TextView tvPhoneNumber;
     private RadioButton rb_male, rb_female;//男 女
     private Button btnChangeInfo;
-    private String id;
+    private Integer id;
     private String phoneNumber;
     private String address;
     private String name;
@@ -63,11 +63,10 @@ public class ChangeUserInfoActivity extends BaseActivity implements View.OnClick
     private void getUserData() {
         GetUserData data = new GetUserData();
         user = data.getUser(this);
-        id = user.getId();
-        address = user.getAddress();
-        name = user.getName();
+        id = user.getuId();
+        name = user.getuName();
         sex = user.getSex();
-        phoneNumber = user.getPhoneNumber();
+        phoneNumber = user.getPhonenumber();
     }
 
     private void initView() {

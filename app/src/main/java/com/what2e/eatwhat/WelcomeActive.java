@@ -68,7 +68,8 @@ public class WelcomeActive extends BasePermissionActivity {
 
     private void skipActivity() {
         if (NetworkTools.checkNetwork(this)) {
-            startActivity(new Intent(this, MainActivity.class));
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
             finish();
         } else {
             Util.showDialog(this, "网络故障", "请检查网络设置", checkNetworkButtonListener);

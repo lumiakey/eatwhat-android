@@ -26,7 +26,7 @@ public class UserInformationActivity extends BaseActivity implements View.OnClic
     private TextView toolbarText;
     private CircleImageView user_img;
     private TextView user_id, user_nickname, user_name, user_sex, user_phoneNumber, user_email, user_address;
-    private String userId;
+    private Integer userId;
     private String phoneNumber;
     private String address;
     private String name;
@@ -110,15 +110,10 @@ public class UserInformationActivity extends BaseActivity implements View.OnClic
      */
     private void getUserIntentData() {
         Intent intent = getIntent();
-        userId = intent.getStringExtra("id");
+        userId = intent.getIntExtra("id", 0);
         name = intent.getStringExtra("name");
-        email = intent.getStringExtra("email");
         phoneNumber = intent.getStringExtra("phoneNumber");
-        address = intent.getStringExtra("address");
-        nickname = intent.getStringExtra("nickname");
         sex = intent.getStringExtra("sex");
-        address = intent.getStringExtra("address");
-        avatar = intent.getStringExtra("avatar");
     }
 
     /**
@@ -127,11 +122,10 @@ public class UserInformationActivity extends BaseActivity implements View.OnClic
     private void getUserData() {
         GetUserData data = new GetUserData();
         user = data.getUser(UserInformationActivity.this);
-        userId = user.getId();
-        address = user.getAddress();
-        name = user.getName();
+        userId = user.getuId();
+        name = user.getuName();
         sex = user.getSex();
-        phoneNumber = user.getPhoneNumber();
+        phoneNumber = user.getPhonenumber();
     }
 
     @Override
