@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.what2e.eatwhat.LoginActivity;
 import com.what2e.eatwhat.MainActivity;
 import com.what2e.eatwhat.OrderListActivity;
 import com.what2e.eatwhat.R;
@@ -126,6 +128,12 @@ public class FirstFragment extends Fragment {
             List<Food> data = getSelect(adapter.getData());
             if (data == null || data.size() == 0) {
                 Toast.makeText(getContext(), "请点餐", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(UserUtils.getUserId())) {
+                Toast.makeText(getContext(), "请登录后再试", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), LoginActivity.class));
+                getActivity().finish();
                 return;
             }
             pay(select);
