@@ -79,6 +79,7 @@ public class ScendFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
         fab.setOnClickListener(view1 -> {
             showBottomSheet();
         });
@@ -86,8 +87,10 @@ public class ScendFragment extends Fragment {
         adapter = new BaseQuickAdapter<Food, BaseViewHolder>(R.layout.food_item, null) {
             @Override
             protected void convert(BaseViewHolder helper, Food item) {
-                helper.setText(R.id.tv_time_tips, item.getTimeTips());
-                helper.setText(R.id.name, item.getFoodName());
+                helper.setVisible(R.id.tv_time_tips, false);
+                helper.setVisible(R.id.name, false);
+                helper.setVisible(R.id.add_shopping_trolley, false);
+                helper.setVisible(R.id.time_tips, false);
                 Picasso.with(helper.itemView.getContext())
                         .load(item.getFoodPicture())
                         .into((ImageView) helper.getView(R.id.food_picture));
@@ -130,13 +133,15 @@ public class ScendFragment extends Fragment {
                 .subscribe(informationBaseResult -> {
                     if ("1000".equals(informationBaseResult.getCode())) {
                         if (informationBaseResult.getResult() == null) return;
+                        adapter.removeAllFooterView();
                         for (Information information : informationBaseResult.getResult()) {
                             ImageView imageView = new ImageView(getContext());
                             imageView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, getResources().getDisplayMetrics())));
                             Picasso.with(getContext())
                                     .load(information.getInfoPicture())
                                     .into(imageView);
-                            adapter.addFooterView(imageView);
+                            if (adapter.getFooterLayoutCount() == 0)
+                                adapter.addFooterView(imageView);
                         }
                     }
                 }, throwable -> {
