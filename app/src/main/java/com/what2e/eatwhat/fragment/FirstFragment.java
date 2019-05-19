@@ -144,6 +144,7 @@ public class FirstFragment extends Fragment {
                             Picasso.with(getContext())
                                     .load(information.getInfoPicture())
                                     .into(imageView);
+                            if (adapter.getFooterLayoutCount() == 0)
                             adapter.addFooterView(imageView);
                         }
                     }
