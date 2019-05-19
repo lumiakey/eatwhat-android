@@ -36,29 +36,29 @@ public class OrderListActivity extends AppCompatActivity {
 
             @Override
             protected void convert(BaseViewHolder helper, OrderList item) {
-                helper.setText(R.id.tv_name, item.getOrderDesc().get(0).getFoodName() + "等 " + item.getOrderDesc().size() + "件商品");
                 helper.setText(R.id.tv_price, "￥" + item.getOrderPrice());
+                helper.setText(R.id.tv_name, item.getOrderDesc().get(0).getFoodName() + " 等 " + item.getOrderDesc().size() + "件商品");
                 switch (item.getOrderType()) {
                     case 1:
-                        helper.setText(R.id.tv_name, "待付款");
+                        helper.setText(R.id.tv_type, "待付款");
                         break;
                     case 2:
-                        helper.setText(R.id.tv_name, "接单中");
+                        helper.setText(R.id.tv_type, "接单中");
                         break;
                     case 3:
-                        helper.setText(R.id.tv_name, "烹饪中");
+                        helper.setText(R.id.tv_type, "烹饪中");
                         break;
                     case 4:
-                        helper.setText(R.id.tv_name, "配送中");
+                        helper.setText(R.id.tv_type, "配送中");
                         break;
                     case 5:
-                        helper.setText(R.id.tv_name, "待评论");
+                        helper.setText(R.id.tv_type, "待评论");
                         break;
                     case 6:
-                        helper.setText(R.id.tv_name, "已完成");
+                        helper.setText(R.id.tv_type, "已完成");
                         break;
                     case 7:
-                        helper.setText(R.id.tv_name, "已取消");
+                        helper.setText(R.id.tv_type, "已取消");
                         break;
                 }
             }
